@@ -1,71 +1,69 @@
 import sqlite3
 
+class comidas:
+    def __init__(self, banco_comidas):
+        self.banco = sqlite3.connect(banco_comidas)
+        self.criar_tabela_comidas()
 
-class Gestao:
-    def __init__(self, banco):
-        self.conn = sqlite3.connect(banco)
-        self.criar_tabela_estoque()
+    def criar_tabela_comidas(self):
+        cursor = self.banco.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS banco_de_dados_comida (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                nome_comida TEXT NOT NULL,
+                preço_comida INTEGER
+            )
+        ''')
+        self.banco.commit()
 
-    def criar_tabela_estoque(self):
-        cursor = self.conn.cursor()
-        cursor.execute(''' 
-            CREATE TABLE IF NOT EXISTS estoque (
-                id INTEGER PRIMARY KEY,
-                produto TEXT,
-                quantidade INTEGER
-                )
-            ''')
-        self.conn.commit()
+    def adicionar_comidas(self, nome_comida, preço_comida):
+        cursor = self.banco.cursor()
+        cursor.execute("INSERT INTO banco_de_dados_comida (nome_comida, preço_comida) VALUES(?, ?)", (nome_comida, preço_comida))
+        self.banco.commit()
 
-    def adicionar_produto(self, produto, quantidade):
-        cursor = self.conn.cursor()
-        cursor.execute(
-            "INSERT INTO estoque (produto, quantidade) VALUES (?, ?)", (produto, quantidade))
-        self.conn.commit()
+    def remover_comidas(self, id):
+        cursor = self.banco.cursor()
+        cursor.execute("DELETE FROM banco_de_dados_comida WHERE id=?", (id,))
+        self.banco.commit()
 
-    def remover_produto(self, produto, quantidade):
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT quantidade FROM estoque WHERE produto=?", (produto,))
-        resultado = cursor.fetchone()
-        if resultado:
-            estoque_atual = resultado[0]
-            if estoque_atual >= quantidade:
-               cursor.execute("UPDATE estoque SET quantidade=? WHERE produto=?",
-                              (estoque_atual - quantidade, produto))
-               self.conn.commit()
-               #se tiver a quantidade de camisa em estoque for maior do que a quantidade a ser deletada vai fazer isso
-            else:
-                print(f"Quantidade insuficiente de {produto} em estoque")
-                #se tiver 5 camisas vermelhas e quiserem apagar 10
-        else:
-            print(f"{produto} não encontado em estoque")
-            #o produto não existe
+    def consultar_comidas(self):
+        cursor = self.banco.cursor()
+        cursor.execute("SELECT * FROM banco_de_dados_comida")
+        resultado = cursor.fetchall()
+        for res in resultado:
+            print(f"Id: {res[0]}\nName: {res[1]}\nPrice: {res[2]}")
+            print("=-="*20)
 
-    def consultar_estoque(self, produto):
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT quantidade FROM estoque WHERE produto=?", (produto,))
-        resultado = cursor.fetchone()
-        if resultado:
-            return resultado[0]
-        else:
-            return 0
+    def procurar_produto(self, id):
+        cursor = self.banco.cursor()
+        try:
+            cursor.execute("SELECT * FROM banco_de_dados_comida WHERE id=?", (id,))
+            resultado = cursor.fetchone()
+            print(f"ID: {resultado[0]}\nName: {resultado[1]}\nPrice: {resultado[2]}")
+        except (Exception, sqlite3.Error) as error:
+            print("ERRO")
 
-    def listar_produtos(self):
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT produto FROM estoque")
-        produtos = cursor.fetchall()
-        return [produtos[0] for produto in produtos]
 
-sistema = Gestao("estoque.db")
+sistema = comidas("banco_de_dados_comida.db")
 
-sistema.adicionar_produto("Chapeu verde", 33)
-sistema.adicionar_produto("Calça jeans azul", 100)
-sistema.adicionar_produto("Maquiagem", 10)
+while True:
+    add_chose = str(input("Deseja adicionar algum produto?[S/N]: ")).upper()
+    if "S" in add_chose:
+        adicionar_comid = str(input("Adicione uma comida: "))
+        preço_comid = int(input("Digite o preço da comida: "))
+        sistema.adicionar_comidas((adicionar_comid), (preço_comid))
+    else:
+        break
+while True:
+    remove_chose = str(input("Deseja remover alguma comida?[S/N]: ")).upper()
+    if "S" in remove_chose:
+        remove_id = int(input("Digite o ID: "))
+        sistema.procurar_produto(remove_id)
+        remove_chose_2 = str(input("Tem certeza que deseja deletar este produto?[S/N]: ")).upper()
+        if "S" in remove_chose_2:
+            sistema.remover_comidas(remove_id)
+            print("Item removido com sucesso!!")
+    else:
+        break
 
-estoque_calça = sistema.consultar_estoque("Calça jeans azul")
-print(f"Quantidade de Calça jeans em estoque {estoque_calça}")
-
-sistema.remover_produto("Chapeu verde", 15)
-
-produtos_em_estoque = sistema.listar_produtos()
-print(f"Produtos em estoque: {produtos_em_estoque}")
+sistema.consultar_comidas()
