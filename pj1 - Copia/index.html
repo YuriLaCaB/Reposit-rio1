@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receitas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Receitas</h1>
+        <p>Receitas picantes para apimentar o seu dia!</p>
+    </header>
+    <main>
+        <article class="revenueMenu">
+            
+            <img src="imagens/pizza.jpg" alt="" id="revenueImage">
+            
+            <h2 id="revenueName">Pizza</h2>
+            
+            <ul id="revenueIngredients">
+                <li id="ingredientOne">Molho de tomate</li>
+                <li id="ingredientTwo">Queijo mussarela</li>
+                <li id="ingredientThree">Calabresa fatiada</li>
+                <li id="ingredientFour">Cebola</li>
+                <li id="ingredientFive">Orégano</li>
+                <li id="ingredientSix">Azeitonas</li>
+            </ul>
+            
+            <video src="videos/pizzavideo.mp4" autoplay loop muted id="revenueVideo"></video>
+
+        </article>
+        <nav>
+            <ul id="revenueBox">
+                <li class="revenueBoxItem" onclick="showPizza()">
+                    <img src="imagens/pizaminibox.webp" alt="">
+                    <h3>Pizza</h3>
+                </li>
+                <li class="revenueBoxItem" onclick="showSushi()">
+                    <img src="imagens/sushi.jpg" alt="">
+                    <h3>Sushi</h3>
+                </li>
+                <li class="revenueBoxItem">
+                    <img src="imagens/HamburguerAlcatraComBacon_1-scaled.jpg" alt="" onclick="showBurger()">
+                    <h3>Humburger</h3>
+                </li>
+                <li class="revenueBoxItem" onclick="showBarbecue()">
+                    <img src="imagens/churrasco.webp" alt="">
+                    <h3>Churrasco</h3>
+                </li>
+                <li class="revenueBoxItem" onclick="showCake()">
+                    <img src="imagens/bolo.jpg" alt="">
+                    <h3>Bolo</h3>
+                </li>
+                <li class="revenueBoxItem" onclick="showBrig()">
+                    <img src="imagens/brigadeiro.webp" alt="">
+                    <h3>Brigadeiro</h3>
+                </li>
+            </ul>
+        </nav>
+    </main>
+    <footer>
+        <p>&copy;2024 Receita Federal</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
